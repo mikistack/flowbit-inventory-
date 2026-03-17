@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/flowbit-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>web</title>
+    <script>
+      (function () {
+        const targetText = 'recent sales';
+        const purgeCards = () => {
+          document.querySelectorAll('h2').forEach((heading) => {
+            if (heading.textContent && heading.textContent.trim().toLowerCase() === targetText) {
+              const card = heading.closest('.card');
+              if (card && card.parentNode) {
+                card.parentNode.removeChild(card);
+              }
+            }
+          });
+        };
+        const init = () => {
+          purgeCards();
+          if (window.MutationObserver) {
+            const observer = new MutationObserver(purgeCards);
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+          }
+          const stopAt = Date.now() + 10000;
+          const intervalId = window.setInterval(() => {
+            purgeCards();
+            if (Date.now() > stopAt) {
+              window.clearInterval(intervalId);
+            }
+          }, 250);
+        };
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init, { once: true });
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
